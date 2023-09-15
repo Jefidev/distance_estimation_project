@@ -1,0 +1,42 @@
+### Pycharm stuffs
+.idea/
+*__pycache__/
+
+### Pytorch model weights
+*.pth
+
+### images
+*.jpg
+*.jpeg
+*.png
+*.tif
+*.tiff
+*.pdf
+
+### log
+wandb/
+log/
+slurm_out
+
+### vscode
+.vscode/
+
+### cache
+.mypy_cache
+cache
+
+### data
+*.pkl
+*.npy
+**/npys/*
+*.npz
+
+job_array*.py
+job_array copy.py
+npy_annotations
+nf4tracking
+*.ipynb
+bash.sh
+python3
+sbatch_*.sh
+data
