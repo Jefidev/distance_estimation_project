@@ -40,3 +40,6 @@ bash.sh
 python3
 sbatch_*.sh
 data
+
+# virtualenv
+venv
