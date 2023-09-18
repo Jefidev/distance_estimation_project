@@ -7,8 +7,8 @@
 #SBATCH --account=tra23_ELLIS
 #SBATCH --reservation s_tra_Ellis1809
 #SBATCH --cpus-per-task=8 ### Number of threads per task (OMP threads)
-#SBATCH -o ./output/megatron/logs/%j.out
-#SBATCH -e ./output/megatron/logs/%j.err
+#SBATCH -o ./output/logs/%j.out
+#SBATCH -e ./output/logs/%j.err
 
 module purge
 module load profile/deeplrn python
