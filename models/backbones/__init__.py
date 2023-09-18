@@ -45,4 +45,5 @@ BACKBONES = {
     'mobilenet_v3_large': MobileNet,
     'mobilenet_v3_small': MobileNet,
     'vit': ViT,
+    'dino': ViTFeat
 }
