@@ -18,3 +18,5 @@ gdown
 lap
 pyarrow
 timm==0.4.5
+torch_geometric
+imgaug
