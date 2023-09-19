@@ -10,7 +10,6 @@
 #SBATCH -o ./output/logs/%j.out
 #SBATCH -e ./output/logs/%j.err
 #SBATCH --time=8:00:00
-#SBATCH -–exclusive
 
 module purge
 module load profile/deeplrn python
