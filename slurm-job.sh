@@ -16,7 +16,15 @@ module load profile/deeplrn python
 nvidia-smi
 
 source ./venv/bin/activate
-python main.py --model zhu --backbone resnet34 --regressor simple_roi --batch_size 8 --input_h_w 720 1280 --train_sampling_stride 50 --lr 5e-05 --loss l1
+python main.py --model zhu \
+ --backbone resnet34 \
+ --regressor simple_roi \
+ --batch_size 8 \ 
+ --input_h_w 720 1280 \
+ --train_sampling_stride 50 \
+ --lr 5e-05 \
+ --loss l1 \
+ --ds_path /leonardo/home/usertrain/a08tra51/distance_estimation_project/data/MOTSynth
 
 
 
