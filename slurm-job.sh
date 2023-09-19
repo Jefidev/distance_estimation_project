@@ -10,6 +10,8 @@
 #SBATCH -o ./output/logs/%j.out
 #SBATCH -e ./output/logs/%j.err
 #SBATCH --time=8:00:00
+#SBATCH -–exclusive
+
 module purge
 module load profile/deeplrn python
 
@@ -23,7 +25,8 @@ python main.py --model zhu \
  --train_sampling_stride 50 \
  --lr 5e-05 \
  --loss l1 \
- --ds_path /leonardo/home/usertrain/a08tra51/distance_estimation_project/data/MOTSynth
+ --ds_path /leonardo/home/usertrain/a08tra51/distance_estimation_project/data/MOTSynth \
+ --annotations_path /leonardo/home/usertrain/a08tra51/distance_estimation_project/annotations_clean
 
 
 
