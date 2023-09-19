@@ -25,7 +25,8 @@ python main.py --model zhu \
  --lr 5e-05 \
  --loss l1 \
  --ds_path /leonardo/home/usertrain/a08tra51/distance_estimation_project/data/MOTSynth \
- --annotations_path /leonardo/home/usertrain/a08tra51/distance_estimation_project/annotations_clean
+ --annotations_path /leonardo/home/usertrain/a08tra51/distance_estimation_project/annotations_clean \
+ --debug
 
 
 
