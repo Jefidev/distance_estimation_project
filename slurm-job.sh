@@ -9,7 +9,7 @@
 #SBATCH --cpus-per-task=8 ### Number of threads per task (OMP threads)
 #SBATCH -o ./output/logs/%j.out
 #SBATCH -e ./output/logs/%j.err
-
+#SBATCH --time=8:00:00
 module purge
 module load profile/deeplrn python
 
