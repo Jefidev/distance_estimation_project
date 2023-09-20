@@ -422,7 +422,7 @@ class ViTFeat(nn.Module):
         self.scale = 1 / patch_size
 
         #        state_dict = torch.load(pretrained_pth, map_location="cpu")
-        state_dict = torch.hub.load_state_dict(pretrained_pth)
+        state_dict = torch.load(pretrained_pth)
         self.model.load_state_dict(state_dict, strict=True)
         print("Loading weight from {}".format(pretrained_pth))
 
