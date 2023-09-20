@@ -7,8 +7,8 @@
 #SBATCH --account=tra23_ELLIS
 #SBATCH --reservation s_tra_Ellis
 #SBATCH --cpus-per-task=8 ### Number of threads per task (OMP threads)
-#SBATCH -o ./output/logs/%j.out
-#SBATCH -e ./output/logs/%j.err
+#SBATCH -o ./output/logs/baseline.out
+#SBATCH -e ./output/logs/baseline.err
 #SBATCH --time=8:00:00
 
 module purge
