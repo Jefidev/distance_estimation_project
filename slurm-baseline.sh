@@ -24,6 +24,8 @@ python main.py --model zhu \
  --train_sampling_stride 50 \
  --lr 5e-05 \
  --loss l1 \
+ --test_sampling_stride 1\
+ --train_sampling_stride 1\
  --ds_path /leonardo/home/usertrain/a08tra51/distance_estimation_project/data/MOTSynth \
  --annotations_path /leonardo/home/usertrain/a08tra51/distance_estimation_project/annotations_clean 
 
