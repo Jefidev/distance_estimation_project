@@ -20,7 +20,7 @@ source ./venv/bin/activate
 python main.py --model zhu \
  --backbone dino \
  --regressor simple_roi \
- --batch_size 4 --input_h_w 720 1280 \
+ --batch_size 8 --input_h_w 720 1280 \
  --accumulation_steps 1\
  --lr 5e-05 \
  --loss l1 \

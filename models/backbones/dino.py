@@ -459,7 +459,6 @@ class ViTFeat(nn.Module):
 
             # Modality selection
             if self.vit_feat == "k":
-                print(k.shape)
                 feats = (
                     k[:, 1:].transpose(1, 2).reshape(bs, self.feat_dim, feat_h * feat_w)
                 )
