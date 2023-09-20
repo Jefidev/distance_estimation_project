@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=distance_estimation_dino
 #SBATCH --ntasks-per-node=1   
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:4
 #SBATCH --partition=boost_usr_prod
 #SBATCH --nodes=1
 #SBATCH --account=tra23_ELLIS
