@@ -282,8 +282,9 @@ def vit_large(patch_size=14, **kwargs):
 
 class ViTFeat(nn.Module):
     """ Vision Transformer """
-    def __init__(self, pretrained_pth="https://dl.fbaipublicfiles.com/dino/dino_vitbase8_pretrain/dino_vitbase8_pretrain.pth", feat_dim=768, vit_arch = 'base', vit_feat = 'k', patch_size=8):
+    def __init__(self, args, pretrained_pth="https://dl.fbaipublicfiles.com/dino/dino_vitbase8_pretrain/dino_vitbase8_pretrain.pth", feat_dim=768, vit_arch = 'base', vit_feat = 'k', patch_size=8):
         super().__init__()
+        assert args.clip_len == 1
         if vit_arch == 'base' :
             self.model = vit_base(patch_size=patch_size, num_classes=0)
 
@@ -344,7 +345,7 @@ class ViTFeat(nn.Module):
                 q = q[:, 1:].transpose(1, 2).reshape(bs, self.feat_dim, feat_h * feat_w)
                 v = v[:, 1:].transpose(1, 2).reshape(bs, self.feat_dim, feat_h * feat_w)
                 feats = torch.cat([k, q, v], dim=1)
-            return feats
+            return feats.reshape(bs, self.feat_dim, 1, feat_h, feat_w)
 
 
 if __name__ == "__main__":
