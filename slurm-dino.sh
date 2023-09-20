@@ -18,7 +18,7 @@ nvidia-smi
 
 source ./venv/bin/activate
 python main.py --model zhu \
- --backbone resnet34 \
+ --backbone dino \
  --regressor simple_roi \
  --batch_size 32 --input_h_w 720 1280 \
  --accumulation_steps 1\
