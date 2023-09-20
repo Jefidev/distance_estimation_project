@@ -27,7 +27,8 @@ python main.py --model zhu \
  --test_sampling_stride 1\
  --train_sampling_stride 1\
  --ds_path /leonardo/home/usertrain/a08tra51/distance_estimation_project/data/MOTSynth \
- --annotations_path /leonardo/home/usertrain/a08tra51/distance_estimation_project/annotations_clean 
+ --annotations_path /leonardo/home/usertrain/a08tra51/distance_estimation_project/annotations_clean\
+ --num_gpus 4 
 
 
 
