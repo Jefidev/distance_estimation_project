@@ -25,6 +25,7 @@ class ZHU(BaseLifter):
         self.enhanced = enhanced
         self.alpha = args.alpha_zhu
         self.loss = args.loss
+        self.use_keypoints = args.use_keypoints
 
         assert not (
             self.enhanced and self.loss in ("gaussian", "laplacian")
@@ -39,14 +40,26 @@ class ZHU(BaseLifter):
             roi_op=args.roi_op,
         )
 
+        if self.use_keypoints:
+
+            self.keypoints_projector = nn.Sequential(
+                nn.Linear(4, 128),
+                nn.ReLU(),
+                nn.Linear(128, 256),
+                nn.ReLU(),
+                nn.Dropout(0.2),
+                nn.Linear(256, 512),
+            )
+
         self.distance_estimator = nn.Sequential(
-            nn.Flatten(),
-            nn.Linear(self.backbone.output_size * 2 * 2, 1024),
+            nn.Linear((self.backbone.output_size * 2 * 2) + self.use_keypoints * 512, 1024),
             nn.ReLU(),
             nn.Linear(1024, 512),
             nn.ReLU(),
             nn.Linear(512, self.output_size),
         )
+
+        self.flattener = nn.Flatten()
 
         if self.enhanced:
             self.keypoint_regressor = nn.Sequential(
@@ -59,12 +72,17 @@ class ZHU(BaseLifter):
                 nn.Tanh(),
             )
 
-    def forward(self, x: torch.Tensor, bboxes: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: torch.Tensor, bboxes: torch.Tensor, keypoints: torch.Tensor) -> torch.Tensor:
         W = x.shape[-1]
         x = rearrange(x, "b c 1 h w -> b c h w")
         x = self.backbone(x)
 
         x = self.regressor(x, bboxes, scale=x.shape[-1] / W)
+        x = self.flattener(x)
+        k = self.keypoints_projector(keypoints)
+        # flat_keypoints = self.flattener(keypoints)
+        
+        x = torch.cat([x, k], axis=-1)
 
         z = self.distance_estimator(x).squeeze(-1)
         if self.loss in ("gaussian", "laplacian"):

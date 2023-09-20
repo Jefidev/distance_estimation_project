@@ -70,6 +70,8 @@ class MOTSynth(VideoFrameDataset):
 
         video_bboxes, tracking_ids, video_dists, visibilities, head_coords = self.extract_gt(labels)
 
+        video_keypoints = self.extract_gt_keypoints(labels)
+
         good_idxs = [torch.ones(len(video_bboxes[i]), dtype=torch.bool) for i in range(len(video_bboxes))]
         clip, video_bboxes, video_dists, good_idxs = self.transform_bb(clip, video_bboxes, video_dists, good_idxs)
 
@@ -111,7 +113,7 @@ class MOTSynth(VideoFrameDataset):
             clip = torch.cat((clip, c_maps.unsqueeze(0)), dim=0)
         classes = [torch.full_like(video_dist, 3.) for video_dist in video_dists]
         return clip, d_map, m_map, video_bboxes, video_dists, visibilities, classes, head_coords, \
-            frames_name, video_name, clip_clean
+            frames_name, video_name, clip_clean, video_keypoints
 
     def extract_gt(self, labels):
         # x1, y1, x2, y2, valid_flag, track_id, distance, visibility, x, y, z
@@ -121,6 +123,10 @@ class MOTSynth(VideoFrameDataset):
         visibilities = [torch.from_numpy(bboxes[:, 7]) for bboxes in labels]
         head_coords = [torch.from_numpy(bboxes[:, 8:11]) for bboxes in labels]
         return video_bboxes, tracking_ids, video_dists, visibilities, head_coords
+    
+    def extract_gt_keypoints(self, labels):
+        # TODO: load keypoints
+        pass
 
     def _get_labels(self, video_name, frames_name):
         labels = self.annotations[video_name]
