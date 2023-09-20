@@ -26,15 +26,18 @@ class ZHU(BaseLifter):
         self.alpha = args.alpha_zhu
         self.loss = args.loss
 
-        assert not (self.enhanced and self.loss in ('gaussian', 'laplacian')),\
-            "Enhanced ZHU is not compatible with gaussian or laplacian loss"
+        assert not (
+            self.enhanced and self.loss in ("gaussian", "laplacian")
+        ), "Enhanced ZHU is not compatible with gaussian or laplacian loss"
 
-        self.output_size = 2 if self.loss in ('gaussian', 'laplacian') else 1
+        self.output_size = 2 if self.loss in ("gaussian", "laplacian") else 1
 
         self.backbone = BACKBONES[args.backbone](args)
-        self.regressor = REGRESSORS[args.regressor](input_dim=self.backbone.output_size,
-                                                    pool_size=2,
-                                                    roi_op=args.roi_op,)
+        self.regressor = REGRESSORS[args.regressor](
+            input_dim=self.backbone.output_size,
+            pool_size=2,
+            roi_op=args.roi_op,
+        )
 
         self.distance_estimator = nn.Sequential(
             nn.Flatten(),
@@ -53,17 +56,18 @@ class ZHU(BaseLifter):
                 nn.Linear(1024, 512),
                 nn.ReLU(),
                 nn.Linear(512, 2),
-                nn.Tanh())
+                nn.Tanh(),
+            )
 
     def forward(self, x: torch.Tensor, bboxes: torch.Tensor) -> torch.Tensor:
         W = x.shape[-1]
-        x = rearrange(x, 'b c 1 h w -> b c h w')
+        x = rearrange(x, "b c 1 h w -> b c h w")
         x = self.backbone(x)
 
         x = self.regressor(x, bboxes, scale=x.shape[-1] / W)
 
         z = self.distance_estimator(x).squeeze(-1)
-        if self.loss in ('gaussian', 'laplacian'):
+        if self.loss in ("gaussian", "laplacian"):
             mu = F.softplus(z[..., 0])
             logvar = z[..., 1]
             z = (mu, logvar)
@@ -79,21 +83,22 @@ class ZHU(BaseLifter):
     def get_loss_fun(self, **kwargs) -> nn.Module:
         if self.enhanced:
             return EnhancedZHU(alpha=self.alpha, train=self.training)
-        return {'l1': SmoothL1, 'gaussian': GNLL, 'laplacian': LNLL}[self.loss]()
+        return {"l1": SmoothL1, "gaussian": GNLL, "laplacian": LNLL}[self.loss]()
 
     def get_trainer(self) -> Trainer:
         return TrainerRegressor
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from main import parse_args
+
     args = parse_args()
-    args.backbone = 'vgg16'
+    args.backbone = "vgg16"
 
     model = ZHU(args).to(args.device)
     x = torch.rand((args.batch_size, 3, 1, 512, 1024)).to(args.device)
     y = model.forward(x)
 
-    print(f'$> RESNET-{model.depth}')
-    print(f'───$> input shape: {tuple(x.shape)}')
-    print(f'───$> output shape: {tuple(y.shape)}')
+    print(f"$> RESNET-{model.depth}")
+    print(f"───$> input shape: {tuple(x.shape)}")
+    print(f"───$> output shape: {tuple(y.shape)}")
