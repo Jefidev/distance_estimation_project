@@ -9,7 +9,7 @@
 #SBATCH --cpus-per-task=8 ### Number of threads per task (OMP threads)
 #SBATCH -o ./output/logs/dino.out
 #SBATCH -e ./output/logs/dino.err
-#SBATCH --time=8:00:00
+#SBATCH --time=24:00:00
 
 module purge
 module load profile/deeplrn python
@@ -28,7 +28,8 @@ python main.py --model zhu \
  --train_sampling_stride 1\
  --ds_path /leonardo/home/usertrain/a08tra51/distance_estimation_project/data/MOTSynth \
  --annotations_path /leonardo/home/usertrain/a08tra51/distance_estimation_project/annotations_clean\
- --num_gpus 4 
+ --num_gpus 4 \
+ --epochs 20
 
 
 
