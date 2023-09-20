@@ -398,9 +398,9 @@ class ViTFeat(nn.Module):
     def __init__(
         self,
         args,
-        pretrained_pth="/leonardo/home/usertrain/a08tra51/distance_estimation_project/data/dino_vitbase8_pretrain.pth",
+        pretrained_pth="/leonardo/home/usertrain/a08tra51/distance_estimation_project/data/dino_deitsmall8_pretrain.pth",
         feat_dim=768,
-        vit_arch="base",
+        vit_arch="small",
         vit_feat="k",
         patch_size=8,
     ):
