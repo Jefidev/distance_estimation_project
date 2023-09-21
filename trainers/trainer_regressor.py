@@ -103,7 +103,8 @@ class TrainerRegressor(Trainer):
                     enabled=self.cnf.fp16,
                     dtype=torch.float16,
                 ):
-                    output = self.model(x, last_frame_bboxes, last_frame_keypoints)
+                    # TODO add : last_frame_keypoints
+                    output = self.model(x, last_frame_bboxes)
 
                     loss = loss_fun(
                         y_pred=output, y_true=y_true, bboxes=last_frame_bboxes
