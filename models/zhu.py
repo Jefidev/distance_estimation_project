@@ -15,6 +15,8 @@ from models.losses.laplacian_nll import LNLL
 from models.losses.smooth_l1 import SmoothL1
 from models.losses.zhu_enhanced import EnhancedZHU
 from trainers.trainer_regressor import TrainerRegressor
+import torch_geometric
+from models.gcn import StackedGATv2
 
 
 class ZHU(BaseLifter):
@@ -27,6 +29,7 @@ class ZHU(BaseLifter):
         self.alpha = args.alpha_zhu
         self.loss = args.loss
         self.use_keypoints = args.use_keypoints
+        self.use_gcn = args.use_gcn
 
         assert not (
             self.enhanced and self.loss in ("gaussian", "laplacian")
@@ -72,6 +75,14 @@ class ZHU(BaseLifter):
                 nn.Tanh(),
             )
 
+        if self.use_gcn:
+            self.self_attention = StackedGATv2(
+                (self.backbone.output_size * 2 * 2) + self.use_keypoints * 512,
+                2,
+                8,
+                512,
+            )
+
     def forward(
         self, x: torch.Tensor, bboxes: torch.Tensor, keypoints: torch.Tensor
     ) -> torch.Tensor:
@@ -85,6 +96,11 @@ class ZHU(BaseLifter):
             k = torch.from_numpy(np.vstack(keypoints)).type_as(x).to(x.device)
             k = self.keypoints_projector(k)
             x = torch.cat([x, k], axis=-1)
+
+        if self.use_gcn:
+            adj = torch.block_diag(*[torch.ones((l, l)) for l in lens])
+            adj = torch_geometric.utils.dense_to_sparse(adj)[0].to(x.device)
+            x = self.self_attention(x, adj)
 
         z = self.distance_estimator(x).squeeze(-1)
         if self.loss in ("gaussian", "laplacian"):
