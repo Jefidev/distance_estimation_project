@@ -54,7 +54,8 @@ class TrainerRegressor(Trainer):
             for step, sample in enumerate(self.train_loader):
                 assert len(self.train_loader) / self.cnf.batch_size > self.cnf.accumulation_steps
 
-                x, _, _, video_bboxes, distances, _, _, head_coords, frame_idx, video_idx, clip_clean = sample
+                x, _, _, video_bboxes, distances, _, _, head_coords, frame_idx, video_idx, clip_clean, video_keypoints = sample
+                last_frame_keypoints = [k[-1] for k in video_keypoints]
                 last_frame_bboxes = [v[-1] for v in video_bboxes]
                 last_head_coords = [h[-1] for h in head_coords]
 
@@ -69,7 +70,7 @@ class TrainerRegressor(Trainer):
                 y_true = z_to_nearness(y_true) if self.cnf.nearness else y_true
 
                 with torch.autocast(self.cnf.device.split(':')[0], enabled=self.cnf.fp16, dtype=torch.float16):
-                    output = self.model(x, last_frame_bboxes)
+                    output = self.model(x, last_frame_bboxes, last_frame_keypoints)
 
                     loss = loss_fun(y_pred=output, y_true=y_true,
                                     bboxes=last_frame_bboxes)
