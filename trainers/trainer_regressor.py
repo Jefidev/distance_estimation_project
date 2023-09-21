@@ -80,8 +80,8 @@ class TrainerRegressor(Trainer):
                     head_coords,
                     frame_idx,
                     video_idx,
-                    clip_clean,
                     video_keypoints,
+                    clip_clean,
                 ) = sample
                 last_frame_keypoints = [k[-1] for k in video_keypoints]
                 last_frame_bboxes = [v[-1] for v in video_bboxes]

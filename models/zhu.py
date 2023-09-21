@@ -1,4 +1,5 @@
 import argparse
+import numpy as np
 
 import torch
 import torch.nn as nn
@@ -42,7 +43,7 @@ class ZHU(BaseLifter):
 
         if self.use_keypoints:
             self.keypoints_projector = nn.Sequential(
-                nn.Linear(4, 128),
+                nn.Linear(10, 128),
                 nn.ReLU(),
                 nn.Linear(128, 256),
                 nn.ReLU(),
@@ -59,8 +60,6 @@ class ZHU(BaseLifter):
             nn.ReLU(),
             nn.Linear(512, self.output_size),
         )
-
-        self.flattener = nn.Flatten()
 
         if self.enhanced:
             self.keypoint_regressor = nn.Sequential(
@@ -81,9 +80,10 @@ class ZHU(BaseLifter):
         x = self.backbone(x)
 
         x = self.regressor(x, bboxes, scale=x.shape[-1] / W)
-        x = self.flattener(x)
+        x = x.view(x.shape[0], -1)
         if self.use_keypoints:
-            k = self.keypoints_projector(keypoints)
+            k = torch.from_numpy(np.vstack(keypoints)).type_as(x).to(x.device)
+            k = self.keypoints_projector(k)
             x = torch.cat([x, k], axis=-1)
 
         z = self.distance_estimator(x).squeeze(-1)

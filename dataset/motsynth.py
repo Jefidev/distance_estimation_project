@@ -112,7 +112,7 @@ class MOTSynth(VideoFrameDataset):
                 ]
             )
             return T(clip), frames_name, video_name
-        labels = self._get_labels(video_name, frames_name)
+        labels, masks = self._get_labels(video_name, frames_name)
 
         (
             video_bboxes,
@@ -123,7 +123,8 @@ class MOTSynth(VideoFrameDataset):
         ) = self.extract_gt(labels)
 
         if self.cnf.use_keypoints:
-            video_keypoints = self._get_keypoints_labels(video_name, frames_name)
+            video_keypoints = self._get_keypoints_labels(video_name, frames_name, masks)
+
         else:
             video_keypoints = None
 
@@ -212,24 +213,26 @@ class MOTSynth(VideoFrameDataset):
         head_coords = [torch.from_numpy(bboxes[:, 8:11]) for bboxes in labels]
         return video_bboxes, tracking_ids, video_dists, visibilities, head_coords
 
-    def _get_keypoints_labels(self, video_name, frames_name):
+    def _get_keypoints_labels(self, video_name, frames_name, masks):
         vid_labels = self.keypoints_annotations[video_name]
         video_keypoints = [
-            vid_labels[vid_labels[:, 0] == float(frame)]
-            for frame in frames_name
+            vid_labels[masks[i]][:, 1:]
+            for i, frame in enumerate(frames_name)
         ]
         return video_keypoints
 
     def _get_labels(self, video_name, frames_name):
         labels = self.annotations[video_name]
-        return [
-            labels[
+        masks = []
+        bboxes = []
+        for frame in frames_name:
+            masks.append(
                 (labels[:, 0] == float(frame))
                 & (labels[:, 5] == 1.0)
                 & (labels[:, 8] >= self.min_visibility)
-            ][:, 1:]
-            for frame in frames_name
-        ]
+            )
+            bboxes.append(labels[masks[-1]][:, 1:])
+        return bboxes, masks
 
     def _get_vid_and_frame_idxs(self, idx):
         video_idx = np.searchsorted(self.cumulative_idxs, idx, side="right") - 1
@@ -239,7 +242,7 @@ class MOTSynth(VideoFrameDataset):
     def get_frames_path(self, video: str) -> str:
         return f"frames/{video}/rgb"
 
-    @staticmethod
+    @ staticmethod
     def get_transforms(cnf, mode):
         if mode == "train":
             T_BB = ComposeBB(
