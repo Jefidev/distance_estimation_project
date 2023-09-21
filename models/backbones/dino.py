@@ -401,7 +401,7 @@ class ViTFeat(nn.Module):
         pretrained_pth="/leonardo/home/usertrain/a08tra51/distance_estimation_project/data/dino_deitsmall8_pretrain.pth",
         feat_dim=384,
         vit_arch="small",
-        vit_feat="k",
+        vit_feat="v",
         patch_size=8,
     ):
         super().__init__()
