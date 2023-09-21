@@ -7,8 +7,8 @@
 #SBATCH --account=tra23_ELLIS
 #SBATCH --reservation s_tra_Ellis
 #SBATCH --cpus-per-task=8 ### Number of threads per task (OMP threads)
-#SBATCH -o ./output/logs/keypoints-baseline.out
-#SBATCH -e ./output/logs/keypoints-baseline.err
+#SBATCH -o ./output/logs/keypoints-gcn-baseline.out
+#SBATCH -e ./output/logs/keypoints-gcn-baseline.err
 #SBATCH --time=24:00:00
 
 module purge
