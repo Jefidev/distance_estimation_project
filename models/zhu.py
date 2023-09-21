@@ -41,7 +41,6 @@ class ZHU(BaseLifter):
         )
 
         if self.use_keypoints:
-
             self.keypoints_projector = nn.Sequential(
                 nn.Linear(4, 128),
                 nn.ReLU(),
@@ -52,7 +51,9 @@ class ZHU(BaseLifter):
             )
 
         self.distance_estimator = nn.Sequential(
-            nn.Linear((self.backbone.output_size * 2 * 2) + self.use_keypoints * 512, 1024),
+            nn.Linear(
+                (self.backbone.output_size * 2 * 2) + self.use_keypoints * 512, 1024
+            ),
             nn.ReLU(),
             nn.Linear(1024, 512),
             nn.ReLU(),
@@ -72,17 +73,18 @@ class ZHU(BaseLifter):
                 nn.Tanh(),
             )
 
-    def forward(self, x: torch.Tensor, bboxes: torch.Tensor, keypoints: torch.Tensor) -> torch.Tensor:
+    # TODO add keypoints :  keypoints: torch.Tensor
+    def forward(self, x: torch.Tensor, bboxes: torch.Tensor) -> torch.Tensor:
         W = x.shape[-1]
         x = rearrange(x, "b c 1 h w -> b c h w")
         x = self.backbone(x)
 
         x = self.regressor(x, bboxes, scale=x.shape[-1] / W)
-        x = self.flattener(x)
-        k = self.keypoints_projector(keypoints)
+        # x = self.flattener(x)
+        # k = self.keypoints_projector(keypoints)
         # flat_keypoints = self.flattener(keypoints)
-        
-        x = torch.cat([x, k], axis=-1)
+
+        # x = torch.cat([x, k], axis=-1)
 
         z = self.distance_estimator(x).squeeze(-1)
         if self.loss in ("gaussian", "laplacian"):
