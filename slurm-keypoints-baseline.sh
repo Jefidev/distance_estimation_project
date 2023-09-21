@@ -18,7 +18,7 @@ nvidia-smi
 
 source ./venv/bin/activate
 python main.py --model zhu \
- --backbone resnet34 \
+ --backbone resnetfpn34 \
  --regressor simple_roi \
  --batch_size 32 --input_h_w 720 1280 \
  --accumulation_steps 1\
@@ -28,7 +28,7 @@ python main.py --model zhu \
  --train_sampling_stride 1\
  --ds_path /leonardo/home/usertrain/a08tra51/distance_estimation_project/data/MOTSynth \
  --annotations_path /leonardo/home/usertrain/a08tra51/distance_estimation_project/annotations_clean \
- --epochs 5 \
+ --epochs 10 \
  --use_keypoints True
 
 
