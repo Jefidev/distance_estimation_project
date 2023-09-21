@@ -99,6 +99,7 @@ class ZHU(BaseLifter):
             x = torch.cat([x, k], axis=-1)
 
         if self.use_gcn:
+            lens = [len(bb) for bb in bboxes]
             adj = torch.block_diag(*[torch.ones((l, l)) for l in lens])
             adj = torch_geometric.utils.dense_to_sparse(adj)[0].to(x.device)
             x = self.self_attention(x, adj)
