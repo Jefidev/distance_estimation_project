@@ -28,7 +28,7 @@ python main.py --model zhu \
  --train_sampling_stride 1\
  --ds_path /leonardo/home/usertrain/a08tra51/distance_estimation_project/data/MOTSynth \
  --annotations_path /leonardo/home/usertrain/a08tra51/distance_estimation_project/annotations_clean \
- --epochs 20
+ --epochs 20 \
 
 
 
