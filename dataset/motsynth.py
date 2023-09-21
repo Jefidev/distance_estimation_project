@@ -216,7 +216,7 @@ class MOTSynth(VideoFrameDataset):
     def _get_keypoints_labels(self, video_name, frames_name, masks):
         vid_labels = self.keypoints_annotations[video_name]
         video_keypoints = [
-            vid_labels[masks[i]][:, 1:]
+            vid_labels[masks[i]][:, 1:] / 2203.0  # hypothenuse of the image
             for i, frame in enumerate(frames_name)
         ]
         return video_keypoints
