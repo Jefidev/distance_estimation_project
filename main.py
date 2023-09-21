@@ -100,6 +100,12 @@ def parse_args(default: bool = False) -> argparse.Namespace:
         default=False,
         help="Merge keypoints information to feature space",
     )
+    parser.add_argument(
+        "--use_gcn",
+        type=bool,
+        default=False,
+        help="Use GCN to estimate distance",
+    )
 
     # PATHS
     parser.add_argument("--log_path", type=str, default="./log")
