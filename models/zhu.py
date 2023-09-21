@@ -80,7 +80,7 @@ class ZHU(BaseLifter):
                 (self.backbone.output_size * 2 * 2) + self.use_keypoints * 512,
                 2,
                 8,
-                512,
+                (self.backbone.output_size * 2 * 2) + self.use_keypoints * 512,
                 0.2,
             )
 

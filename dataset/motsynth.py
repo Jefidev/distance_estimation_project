@@ -126,7 +126,7 @@ class MOTSynth(VideoFrameDataset):
             video_keypoints = self._get_keypoints_labels(video_name, frames_name, masks)
 
         else:
-            video_keypoints = None
+            video_keypoints = []
 
         good_idxs = [
             torch.ones(len(video_bboxes[i]), dtype=torch.bool)
