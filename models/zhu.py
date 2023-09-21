@@ -81,6 +81,7 @@ class ZHU(BaseLifter):
                 2,
                 8,
                 512,
+                0.2,
             )
 
     def forward(
