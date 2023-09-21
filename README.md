@@ -57,3 +57,14 @@ python main.py --model disnet --batch_size 256 --train_sampling_stride 50 --lr 5
 [6] Tuohy, Shane, et al. “Distance determination for an automobile environment using inverse perspective mapping in OpenCV.” (2010): 100-105.
 
 [7] Zhu, Jing, and Yi Fang. “Learning object-specific distance from a monocular image.” Proceedings of the IEEE/CVF International Conference on computer vision. 2019.
+
+
+
+--roi_op ['align','pool']
+
+
+
+
+
+10 h 46
+--backbones [look in the init file of the backbone folders]
