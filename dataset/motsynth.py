@@ -67,6 +67,14 @@ class MOTSynth(VideoFrameDataset):
                 for seq in self.sequences
             }
 
+            if cnf.use_keypoints:
+                self.keypoints_annotations = {
+                    seq: np.load(Path(self.annotations_path, "keypoints", f"{seq}.npy"))
+                    for seq in self.sequences
+                }
+            else:
+                video_keypoints = None
+
         with Timer(f"Loading {mode} videos", one_line=True):
             self._load_videos()
 
@@ -116,7 +124,9 @@ class MOTSynth(VideoFrameDataset):
             head_coords,
         ) = self.extract_gt(labels)
 
-        video_keypoints = self.extract_gt_keypoints(labels)
+        if self.cnf.use_keypoints:
+            keypoints_labels = self._get_labels_keypoints(video_name, frames_name)
+            _, video_keypoints = self.extract_gt_keypoints(keypoints_labels)
 
         good_idxs = [
             torch.ones(len(video_bboxes[i]), dtype=torch.bool)
@@ -204,8 +214,21 @@ class MOTSynth(VideoFrameDataset):
         return video_bboxes, tracking_ids, video_dists, visibilities, head_coords
 
     def extract_gt_keypoints(self, labels):
-        # TODO: load keypoints
-        pass
+        # TODO: Check if the reading is done properly
+        tracking_ids = [torch.from_numpy(keypoints[:, 0]) for keypoints in labels]
+        video_keypoints = [torch.from_numpy(keypoints[:, 1:]) for keypoints in labels]
+        return tracking_ids, video_keypoints
+
+    def _get_labels_keypoints(self, video_name, frames_name):
+        # TODO: Check if some other conditions are needed based on the keypoints files format
+        labels = self.keypoints_annotations[video_name]
+        return [
+            labels[
+                (labels[:, 0] == float(frame))
+            ]
+            for frame in frames_name
+        ]
+ 
 
     def _get_labels(self, video_name, frames_name):
         labels = self.annotations[video_name]
