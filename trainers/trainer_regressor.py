@@ -81,9 +81,9 @@ class TrainerRegressor(Trainer):
                     frame_idx,
                     video_idx,
                     clip_clean,
-                    # video_keypoints
+                    video_keypoints,
                 ) = sample
-                # last_frame_keypoints = [k[-1] for k in video_keypoints]
+                last_frame_keypoints = [k[-1] for k in video_keypoints]
                 last_frame_bboxes = [v[-1] for v in video_bboxes]
                 last_head_coords = [h[-1] for h in head_coords]
 
@@ -103,8 +103,7 @@ class TrainerRegressor(Trainer):
                     enabled=self.cnf.fp16,
                     dtype=torch.float16,
                 ):
-                    # TODO add : last_frame_keypoints
-                    output = self.model(x, last_frame_bboxes)
+                    output = self.model(x, last_frame_bboxes, last_frame_keypoints)
 
                     loss = loss_fun(
                         y_pred=output, y_true=y_true, bboxes=last_frame_bboxes
