@@ -29,7 +29,7 @@ python main.py --model zhu \
  --ds_path /leonardo/home/usertrain/a08tra51/distance_estimation_project/data/MOTSynth \
  --annotations_path /leonardo/home/usertrain/a08tra51/distance_estimation_project/annotations_clean\
  --num_gpus 2 \
- --epochs 20
+ --epochs 10
 
 
 
