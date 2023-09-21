@@ -123,8 +123,7 @@ class MOTSynth(VideoFrameDataset):
         ) = self.extract_gt(labels)
 
         if self.cnf.use_keypoints:
-            keypoints_labels = self._get_labels_keypoints(video_name, frames_name)
-            _, video_keypoints = self.extract_gt_keypoints(keypoints_labels)
+            video_keypoints = self._get_keypoints_labels(video_name, frames_name)
         else:
             video_keypoints = None
 
@@ -213,21 +212,13 @@ class MOTSynth(VideoFrameDataset):
         head_coords = [torch.from_numpy(bboxes[:, 8:11]) for bboxes in labels]
         return video_bboxes, tracking_ids, video_dists, visibilities, head_coords
 
-    def extract_gt_keypoints(self, labels):
-        # TODO: Check if the reading is done properly
-        tracking_ids = [torch.from_numpy(keypoints[:, 0]) for keypoints in labels]
-        video_keypoints = [torch.from_numpy(keypoints[:, 1:]) for keypoints in labels]
-        return tracking_ids, video_keypoints
-
-    def _get_labels_keypoints(self, video_name, frames_name):
-        # TODO: Check if some other conditions are needed based on the keypoints files format
-        labels = self.keypoints_annotations[video_name]
-        return [
-            labels[
-                (labels[:, 0] == float(frame))
-            ]
+    def _get_keypoints_labels(self, video_name, frames_name):
+        vid_labels = self.keypoints_annotations[video_name]
+        video_keypoints = [
+            vid_labels[vid_labels[:, 0] == float(frame)]
             for frame in frames_name
         ]
+        return video_keypoints
 
     def _get_labels(self, video_name, frames_name):
         labels = self.annotations[video_name]
