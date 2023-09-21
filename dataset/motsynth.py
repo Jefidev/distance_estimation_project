@@ -72,8 +72,6 @@ class MOTSynth(VideoFrameDataset):
                     seq: np.load(Path(self.annotations_path, "keypoints", f"{seq}.npy"))
                     for seq in self.sequences
                 }
-            else:
-                video_keypoints = None
 
         with Timer(f"Loading {mode} videos", one_line=True):
             self._load_videos()
@@ -127,6 +125,8 @@ class MOTSynth(VideoFrameDataset):
         if self.cnf.use_keypoints:
             keypoints_labels = self._get_labels_keypoints(video_name, frames_name)
             _, video_keypoints = self.extract_gt_keypoints(keypoints_labels)
+        else:
+            video_keypoints = None
 
         good_idxs = [
             torch.ones(len(video_bboxes[i]), dtype=torch.bool)
@@ -228,7 +228,6 @@ class MOTSynth(VideoFrameDataset):
             ]
             for frame in frames_name
         ]
- 
 
     def _get_labels(self, video_name, frames_name):
         labels = self.annotations[video_name]
