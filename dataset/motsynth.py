@@ -200,8 +200,8 @@ class MOTSynth(VideoFrameDataset):
             head_coords,
             frames_name,
             video_name,
-            clip_clean,
             video_keypoints,
+            clip_clean,
         )
 
     def extract_gt(self, labels):

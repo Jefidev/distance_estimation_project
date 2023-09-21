@@ -82,10 +82,9 @@ class ZHU(BaseLifter):
 
         x = self.regressor(x, bboxes, scale=x.shape[-1] / W)
         x = self.flattener(x)
-        k = self.keypoints_projector(keypoints)
-        # flat_keypoints = self.flattener(keypoints)
-
-        x = torch.cat([x, k], axis=-1)
+        if self.use_keypoints:
+            k = self.keypoints_projector(keypoints)
+            x = torch.cat([x, k], axis=-1)
 
         z = self.distance_estimator(x).squeeze(-1)
         if self.loss in ("gaussian", "laplacian"):
