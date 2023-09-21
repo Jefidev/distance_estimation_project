@@ -206,6 +206,7 @@ class TrainerRegressor(Trainer):
                     _,
                     frame_idx,
                     video_idx,
+                    video_keypoints,
                     _,
                 ) = sample
 
@@ -213,6 +214,10 @@ class TrainerRegressor(Trainer):
                 last_frame_visibilities = [v[-1] for v in visibilities][-1]
                 last_frame_bboxes = [[v[-1] for v in video_bboxes][-1]]
                 last_frame_classes = [c[-1] for c in classes][-1]
+                if self.cnf.use_keypoints:
+                    last_frame_keypoints = [k[-1] for k in video_keypoints]
+                else:
+                    last_frame_keypoints = None
 
                 if is_list_empty(last_frame_bboxes):
                     pbar.update()
@@ -220,7 +225,7 @@ class TrainerRegressor(Trainer):
 
                 x = x.to(self.cnf.device)
 
-                output = self.model(x, last_frame_bboxes)
+                output = self.model(x, last_frame_bboxes, last_frame_keypoints)
 
                 y_true = last_frame_distances.view(-1).to(self.cnf.device)
                 y_true = z_to_nearness(y_true) if self.cnf.nearness else y_true
