@@ -83,7 +83,10 @@ class TrainerRegressor(Trainer):
                     video_keypoints,
                     clip_clean,
                 ) = sample
-                last_frame_keypoints = [k[-1] for k in video_keypoints]
+                if self.cnf.use_keypoints:
+                    last_frame_keypoints = [k[-1] for k in video_keypoints]
+                else:
+                    last_frame_keypoints = None
                 last_frame_bboxes = [v[-1] for v in video_bboxes]
                 last_head_coords = [h[-1] for h in head_coords]
 
